@@ -49,3 +49,14 @@ input[type="number"]:focus {
     font-size: 1.5rem; /* Adjust label font size to match the title */
     font-weight: bold; /* Make the label text bold */
 }
+
+/* Style each letter */
+span.letter-l {
+    color: red;
+}
+span.letter-e {
+    color: green;
+}
+span.letter-d {
+    color: blue;
+}
