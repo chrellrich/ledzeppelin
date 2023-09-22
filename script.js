@@ -1,16 +1,52 @@
 // Define the hue offset, maximum hue offset, and interval duration in milliseconds (adjust as needed)
-const initialHueOffset = 10; // Initial fixed hue offset between each lightbulb
+const initialHueOffset = 5 // Initial fixed hue offset between each lightbulb
 const maxHueOffset = 360; // Maximum hue offset
 let deltaHueOffset = 1;
-const intervalDuration = 20;
+const intervalDuration = 10;
 
 let currentHueOffset = initialHueOffset; // Initialize the current hue offset
 
-// Function to calculate the order of a lightbulb based on its vertical position
+// Function to count the total number of lightbulbs in the SVG
+function countTotalLightbulbs() {
+    const lightbulbs = document.querySelectorAll('g[id^="Lightbulb"]');
+    return lightbulbs.length;
+}
+
+// Get the total number of lightbulbs
+const totalLightbulbs = countTotalLightbulbs();
+
+// Function to calculate the order of a lightbulb based on its distance from the mouse pointer
 function calculateOrder(lightbulb) {
     const rect = lightbulb.getBoundingClientRect();
-    return Math.floor(rect.top / rect.height) + 1;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate the distance between the center of the lightbulb and the mouse pointer
+    const deltaX = centerX - mouseX;
+    const deltaY = centerY - mouseY;
+    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+
+    // Calculate the order based on the distance
+    const order = Math.floor((distance / maxDistance) * totalLightbulbs) + 1;
+
+    return order;
 }
+
+// Function to update the mouse coordinates
+function updateMousePosition(event) {
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+}
+
+// Calculate the maximum distance based on the window dimensions
+const maxDistance = Math.sqrt((window.innerWidth / 2) ** 2 + (window.innerHeight / 2) ** 2);
+
+// Initialize the mouse coordinates
+let mouseX = 0;
+let mouseY = 0;
+
+// Add a mousemove event listener to update the mouse coordinates
+window.addEventListener('mousemove', updateMousePosition);
 
 // Function to set the fill color of the first path in a lightbulb to a gradient color
 function setHueColor(lightbulb, offset) {
@@ -26,7 +62,7 @@ function setHueColor(lightbulb, offset) {
 
 // Function to update the hue offset
 function updateHueOffset() {
-    currentHueOffset = (currentHueOffset + deltaHueOffset) % maxHueOffset; // Increment and reset if exceeding max offset
+    currentHueOffset = (currentHueOffset - deltaHueOffset) % maxHueOffset; // Increment and reset if exceeding max offset
 }
 
 // Loop through the lightbulb elements and set hue colors for each lightbulb
